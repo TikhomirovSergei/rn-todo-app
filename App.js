@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, View, FlatList } from 'react-native';
-import { AddTodo } from './src/AddTodo';
-import { Todo } from "./src/Todo"
-import { Navbar } from "./src/Navbar"
+import { StyleSheet, View } from 'react-native';
+import { Navbar } from "./src/components/Navbar"
+import { MainScreen } from './src/screens/MainScreen';
+import { TodoScreen } from './src/screens/TodoScreen';
 
 export default function App() {
+  const [todoId, setTodoId] = useState(null);
   const [todos, setTodos] = useState([]);
 
   const addTodo = title => {
@@ -19,16 +20,21 @@ export default function App() {
     setTodos(prev => prev.filter(todo => todo.id !== id))
   }
 
+  let content = <MainScreen
+    todos={todos}
+    addTodo={addTodo}
+    removeTodo={removeTodo}
+    openTodo={setTodoId} />
+
+  if (todoId) {
+    const selectedTodo = todos.find(todo => todo.id === todoId)
+    content = <TodoScreen goBack={() => setTodoId(null)} todo={selectedTodo} />
+  }
+
   return (
     <View>
       <Navbar title="Todo App" />
-      <View style={styles.container}>
-        <AddTodo onSubmit={addTodo} />
-        <FlatList
-          keyExtractor={item => item.id}
-          data={todos}
-          renderItem={({ item }) => <Todo todo={item} onRemove={removeTodo} />} />
-      </View>
+      <View style={styles.container}>{content}</View>
       <StatusBar style="auto" />
     </View>
   );

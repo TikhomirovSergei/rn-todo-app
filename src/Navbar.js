@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 
-export const Navbar = props => {
+export const Navbar = ({ title }) => {
     return (
         <View style={styles.containter}>
-            <Text style={styles.text}>{props.title}</Text>
+            <Text style={styles.text}>{title}</Text>
         </View>
     )
 }

@@ -1,18 +1,27 @@
-import React, { useState } from "react"
-import { StyleSheet, View } from "react-native"
+import React, { useContext, useState } from "react"
+import { StyleSheet, View, Dimensions } from "react-native"
 import { FontAwesome, AntDesign } from "@expo/vector-icons"
 
-import { EditModal } from "../components/EditModal"
 import { AppCard } from "../components/ui/AppCard"
 import { AppTextBold } from "../components/ui/AppTextBold"
 import { AppButton } from "../components/ui/AppButton"
+
+import { TodoContext } from "../context/todo/todoContext"
+import { ScreenContext } from "../context/screen/screenContext"
+
+import { EditModal } from "../components/EditModal"
+
 import { THEME } from "../theme"
 
-export const TodoScreen = ({ onRemove, goBack, todo, onSave }) => {
+export const TodoScreen = () => {
+    const { todos, updateTodo, removeTodo } = useContext(TodoContext)
+    const { todoId, changeScreen } = useContext(ScreenContext)
     const [modal, setModal] = useState(false)
 
+    const todo = todos.find(t => t.id === todoId)
+
     const saveHandler = title => {
-        onSave(todo.id, title)
+        updateTodo(todo.id, title)
         setModal(false)
     }
 
@@ -31,12 +40,12 @@ export const TodoScreen = ({ onRemove, goBack, todo, onSave }) => {
             </AppCard>
             <View style={styles.buttons}>
                 <View style={styles.button}>
-                    <AppButton color={THEME.GRAY_COLOR} onPress={goBack}>
+                    <AppButton color={THEME.GRAY_COLOR} onPress={() => changeScreen(null)}>
                         <AntDesign name="back" size={20} color="#fff" />
                     </AppButton>
                 </View>
                 <View style={styles.button}>
-                    <AppButton color={THEME.DANGER_COLOR} onPress={() => onRemove(todo.id)}>
+                    <AppButton color={THEME.DANGER_COLOR} onPress={() => removeTodo(todo.id)}>
                         <FontAwesome name="remove" size={20} color="#fff" />
                     </AppButton>
                 </View>
@@ -47,15 +56,15 @@ export const TodoScreen = ({ onRemove, goBack, todo, onSave }) => {
 
 const styles = StyleSheet.create({
     buttons: {
-        flexDirection: "row",
-        justifyContent: "space-between",
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     card: {
         marginBottom: 20,
         padding: 15
     },
     button: {
-        width: "40%"
+        width: Dimensions.get('window').width > 400 ? 150 : 100
     },
     title: {
         fontSize: 20

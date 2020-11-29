@@ -40,7 +40,7 @@ export const TodoState = ({ children }) => {
                     style: "destructive",
                     onPress: async () => {
                         changeScreen(null)
-                        await Http.get(`https://rn-todo-app-a50fd.firebaseio.com/todos/${id}.json`)
+                        await Http.delete(`https://rn-todo-app-a50fd.firebaseio.com/todos/${id}.json`)
                         dispatch({ type: REMOVE_TODO, id })
                     }
                 }
@@ -67,7 +67,7 @@ export const TodoState = ({ children }) => {
     const updateTodo = async (id, title) => {
         clearError()
         try {
-            await Http.patch(`https://rn-todo-app-a50fd.firebaseio.com/todos/${id}.json`)
+            await Http.patch(`https://rn-todo-app-a50fd.firebaseio.com/todos/${id}.json`, { title })
             dispatch({ type: UPDATE_TODO, id, title })
         } catch (e) {
             showError("Что-то пошло не так...")
